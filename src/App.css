@@ -46,3 +46,12 @@ form {
   font-size: 20px;
   gap: 10px;
 }
+
+.download-link {
+  color: white;
+  text-decoration: none;
+}
+
+.download-link:hover {
+  font-weight: bold;
+}

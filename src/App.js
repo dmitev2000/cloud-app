@@ -11,6 +11,8 @@ function App() {
   const [done, setDone] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [download, setDownload] = useState("");
+  const [href, setHref] = useState("");
 
   const calculateHandler = async (e) => {
     e.preventDefault();
@@ -27,10 +29,8 @@ function App() {
       .then((res) => {
         const blob = new Blob(res.data, { type: "text/plain" });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = "output.txt";
-        link.href = url;
-        link.click();
+        setDownload("output.txt");
+        setHref(url);
         setProcessing(false);
         setDone(true);
         setEndTime(new Date());
@@ -43,7 +43,11 @@ function App() {
       <h1>Upload your file</h1>
       <form id="form" onSubmit={calculateHandler} encType="multipart/form-data">
         <DragDrop />
-        <button type="submit" disabled={fileCtx.file === null || processing} className="btn">
+        <button
+          type="submit"
+          disabled={fileCtx.file === null || processing}
+          className="btn"
+        >
           Calculate
         </button>
       </form>
@@ -53,8 +57,20 @@ function App() {
           <Loader />
         </div>
       )}
-      {(done && !processing) && (
-        <span>Completed! &#128338; Time elapsed {Math.abs(endTime - startTime)} ms</span>
+      {done && !processing && (
+        <>
+          <span>
+            Completed! &#128338; Time elapsed {Math.abs(endTime - startTime)} ms
+          </span>
+          <a
+            id="download-link"
+            href={href}
+            download={download}
+            className="download-link"
+          >
+            Download <i className="bi bi-cloud-arrow-down"></i>
+          </a>
+        </>
       )}
     </div>
   );
