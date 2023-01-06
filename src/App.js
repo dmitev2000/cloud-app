@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import DragDrop from "./components/DragDrop";
 import FileContext from "./context/FileContext";
@@ -34,8 +33,6 @@ function App() {
         link.click();
         setProcessing(false);
         setDone(true);
-        setProcessing(false);
-        setDone(true);
         setEndTime(new Date());
       })
       .catch((err) => console.log(err));
@@ -46,7 +43,7 @@ function App() {
       <h1>Upload your file</h1>
       <form id="form" onSubmit={calculateHandler} encType="multipart/form-data">
         <DragDrop />
-        <button type="submit" disabled={fileCtx.file === null} className="btn">
+        <button type="submit" disabled={fileCtx.file === null || processing} className="btn">
           Calculate
         </button>
       </form>
@@ -56,8 +53,8 @@ function App() {
           <Loader />
         </div>
       )}
-      {done && (
-        <span>Completed! Time elapsed {Math.abs(endTime - startTime)} ms</span>
+      {(done && !processing) && (
+        <span>Completed! &#128338; Time elapsed {Math.abs(endTime - startTime)} ms</span>
       )}
     </div>
   );

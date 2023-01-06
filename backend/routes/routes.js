@@ -1,34 +1,33 @@
-/* eslint-disable no-unused-vars */
 const router = require("express").Router();
 const fs = require("fs");
-const lineReader = require("line-reader");
-const Promise = require("bluebird");
 
 router.route("/calc").post((req, res) => {
-  var isFirst = true;
-  var savedInt;
-  var eachLine = Promise.promisify(lineReader.eachLine);
   var result = [];
+  var array;
 
-  fs.truncate("tmp\\output.txt", 0, function () {
-    console.log("tmp\\output.txt truncated.");
-  });
-
-  eachLine(`uploads\\${req.file.filename}`, (line, last) => {
-    console.log(line);
-    if (isFirst) {
-      savedInt = parseInt(line);
-      isFirst = false;
-    } else {
-      isFirst = true;
-      result.push((savedInt + parseInt(line)) + "\n");
-      fs.appendFileSync("tmp\\output.txt", `${savedInt + parseInt(line)}\n`);
-    }
-  })
-    .then(() => {
+  try {
+    fs.readFile(`uploads\\${req.file.filename}`, (err, data) => {
+      if (err) throw err;
+      array = data.toString().split("\n");
+      var i = 0;
+      var len = array.length;
+      //console.log("Calculating...");
+      while (i < len) {
+        var first = array[i];
+        var second = array[i + 1];
+        if (!second) {
+          result.push(parseInt(first) + "\n");
+          break;
+        }
+        result.push(parseInt(first) + parseInt(second) + "\n");
+        i += 2;
+      }
+      //console.log("Done...");
       res.status(200).json(result);
-    })
-    .catch((err) => console.log(err));
+    });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
 });
 
 module.exports = router;

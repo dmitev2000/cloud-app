@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import FileContext from "../context/FileContext";
 
@@ -17,8 +16,13 @@ function DragDrop() {
         name="file"
         multiple={false}
         types={fileTypes}
+        classes="drop_area"
       />
-      {fileCtx.file ? <span>{fileCtx.file.name}</span> : <span>No file uploaded yet.</span>}
+      {fileCtx.file ? (
+        <span>&#9989; {fileCtx.file.name}</span>
+      ) : (
+        <span>&#9940; No file uploaded yet.</span>
+      )}
     </>
   );
 }
